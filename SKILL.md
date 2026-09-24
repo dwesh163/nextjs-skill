@@ -33,6 +33,34 @@ where it matters:
 Pick the case that matches the project you're in; don't import machinery
 (better-auth's access-control plugin, `ServiceResponse`, a database at all)
 that a smaller app doesn't need.
+
+In an existing repo, the code itself usually answers which case applies —
+read it, don't ask what's already on disk. But if the repo is ambiguous or
+only partially set up (e.g. no Prisma schema yet but unclear if that's
+intentional, or an i18n folder with only one locale ever added to it), don't
+guess which way to extend it — ask directly, same as the fresh-scaffold case
+below.
+
+Scaffolding a fresh project is the clearer version of the same problem:
+there's no code to read at all, so don't silently default to the full stack
+table below. Ask the user first, as a short batch of questions rather than
+one at a time:
+
+- **Database** — does it own data via Prisma, or is it a thin BFF/proxy with
+  no local DB (services-and-errors.md's Shape B, see prisma.md)?
+- **i18n** — multiple locales via `next-intl`, or single-language with no
+  translation layer at all (see translations.md)?
+- **Auth** — needed at all, and if so DB-backed vs stateless sessions, which
+  OIDC provider (see auth.md)?
+- **Permissions** — IdP groups, app-local/delegated roles, org-scoped
+  multi-tenant, or nothing beyond "logged in" (see permissions.md)?
+- **Billing** — `@better-auth/stripe`, per-user or per-organization, or not
+  needed (see stripe.md)?
+
+Only wire in what the user actually confirms — this is the same
+"don't import machinery a smaller app doesn't need" rule above, applied
+before any code exists instead of after.
+
 If a repo has its own `rules/`, `CLAUDE.md` or `AGENTS.md`, that repo's
 version wins over this skill where the two disagree; those are living
 documents for that specific codebase.
