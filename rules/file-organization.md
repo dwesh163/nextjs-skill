@@ -166,32 +166,34 @@ works just as well.
 
 File names are kebab-case, never PascalCase/camelCase (`ProductCard.tsx`,
 `sessionProvider.tsx`) — but a hyphen joining two meaningful words is usually
-a sign the name wants to be a folder instead. When the first word names a
-real domain/category the codebase already organizes by (or should), nest
-rather than hyphenate:
+a sign that one of those words is already a folder, or should be. Check each
+half of the compound against the path, in either direction: if a word names
+a real domain/category — one the file already sits inside, or one that
+deserves splitting out into its own folder — drop that word from the
+filename and let the path carry it instead.
 
-- ❌ `components/product-card.tsx` → ✅ `components/product/card.tsx`
-- ❌ `components/session-provider.tsx` → ✅ `providers/session.tsx` — the
-  folder already says "provider", don't repeat it in the filename
-- ❌ `components/order-table.tsx` → ✅ `components/order/table.tsx`
+- ❌ `components/product-card.tsx` → ✅ `components/product/card.tsx` — "product"
+  becomes the folder
+- ❌ `components/session-provider.tsx` → ✅ `providers/session.tsx` — "provider"
+  becomes the folder
+- ❌ `components/auth/sign-in-form.tsx` → ✅ `components/auth/sign-in.tsx` —
+  "auth" is already the folder the file sits in, so that's the word to drop
+  this time, not the folder to invent
 
-Keep a hyphenated, flat filename when the compound name does **not**
-correspond to a real domain/category folder — nesting would just invent a
-meaningless folder with one file in it. `components/ui/data-table.tsx` is a
-generic, reusable table primitive: "data" isn't a domain, so it stays flat
-and hyphenated rather than becoming `components/ui/data/table.tsx`. If that
-same table turns out to be specific to one domain (an admin product listing,
-say), it belongs under that domain instead — `components/product/table.tsx`,
-not `components/product-table.tsx`.
+Keep a hyphenated, flat filename when neither half of the compound names a
+real domain/category — nesting or dropping would erase real information,
+not redundancy. `components/ui/data-table.tsx` stays flat and hyphenated:
+neither "data" nor "table" is a domain here. If that same table turns out to
+be specific to one domain (an admin product listing, say), it belongs under
+that domain instead — `components/product/table.tsx`, not
+`components/product-table.tsx`.
 
-Rule of thumb before naming a file `x-y.tsx`: is `x` a domain this codebase
-already organizes by (or would `x/` earn its own folder as more files show
-up)? If yes, nest: `x/y.tsx`. If `x` is a generic, non-domain descriptor
-(`data`, `base`, `shared`) with no folder of its own planned, keep the
-hyphen — that's what `data-table.tsx` and similar shared primitives already
-do. This doesn't apply to the `use-<thing>.tsx` hook-naming convention below
-— `use-` is a functional prefix, not a domain word, and always stays
-hyphenated.
+Rule of thumb before naming a file `x-y.tsx`: does `x` or `y` name a domain
+this codebase already organizes by — its own folder, or the one the file is
+already inside? If yes, drop that word and nest or flatten accordingly. If
+neither half is a domain word, keep the hyphen. This doesn't apply to the
+`use-<thing>.tsx` hook-naming convention below — `use-` is a functional
+prefix, not a domain word, and always stays hyphenated.
 
 ## Feature sub-folders
 
