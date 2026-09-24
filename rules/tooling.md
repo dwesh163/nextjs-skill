@@ -336,21 +336,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # A GitHub App token, not secrets.GITHUB_TOKEN: the default token's commits/releases
-      # don't trigger other workflows and can't reach outside this repo — needed the moment
-      # release automation has to touch a second repo (see the chart-bump extension below).
-      - name: Generate release app token
-        id: release-app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_SECRET }}
-
       - name: Create release
         uses: dwesh163/actions/release@main
         with:
           version: ${{ needs.detect-version.outputs.version }}
-          github-token: ${{ steps.release-app-token.outputs.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 `detect-version`'s `type: js` reads the version straight out of
@@ -379,6 +369,15 @@ above:
           github-app-id: ${{ secrets.GH_APP_ID }}
           github-app-private-key: ${{ secrets.GH_APP_SECRET }}
 ```
+
+`bump-chart` authenticates with a GitHub App token (`github-app-id`/
+`github-app-private-key`, from `secrets.GH_APP_ID`/`secrets.GH_APP_SECRET`)
+rather than `secrets.GITHUB_TOKEN`, because it has to push to a second repo
+(`<org>/charts`) — outside what the injected, repo-scoped token can reach.
+`create-release` stays on `secrets.GITHUB_TOKEN`: it only touches the repo
+the workflow is already running in, so there's no external secret to
+provision for it. Reach for a GitHub App token only once a job itself needs
+cross-repo access, not by default for every job in the workflow.
 
 This is the shape every extension to `release.yaml` should take: a new job,
 `needs: [..., create-release]`, appended at the end — never a change to
