@@ -129,34 +129,38 @@ it supports feels.
 One thin `"use client"` wrapper file per context provider used in the root
 layout — `providers/<name>.tsx`, imported as `@/providers/<name>`. Reach for
 one whenever a genuine client-side context provider is needed: fully custom
-app code with its own hooks/state (a theme toggle, a realtime/websocket
-connection, a feature-flag context), or a third-party client component you
-want behind a stable, app-owned import path instead of reaching into the
-library directly at every call site:
+app code with its own hooks/state (a realtime/websocket connection, a
+feature-flag context), or a third-party client component you want behind a
+stable, app-owned import path instead of reaching into the library directly
+at every call site — `providers/theme.tsx`, wrapping `next-themes` (see
+ui.md), is the concrete, real example of that second case in this stack.
 
 ```tsx
-// src/providers/theme.tsx — schematic: any provider with real client-side state follows this shape
+// src/providers/feature-flags.tsx — schematic: fully custom state follows this shape
 "use client";
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-const ThemeContext = createContext<ThemeContextValue | null>(null);
+const FeatureFlagsContext = createContext<FeatureFlagsContextValue | null>(null);
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("system");
-  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
+export function FeatureFlagsProvider({ children }: { children: ReactNode }) {
+  const [flags, setFlags] = useState<FeatureFlags>({});
+  return <FeatureFlagsContext.Provider value={{ flags, setFlags }}>{children}</FeatureFlagsContext.Provider>;
 }
-export const useTheme = () => useContext(ThemeContext)!;
+export const useFeatureFlags = () => useContext(FeatureFlagsContext)!;
 ```
 
-Neither auth nor i18n need one of these in this stack's current defaults:
-better-auth's client (`useSession()`, see auth.md) is store-backed, not
-context-based, so it works with no provider at all; `next-intl`'s
-`NextIntlClientProvider` is already a ready-to-compose client component with
-nothing app-specific to add, used directly inline in the root layout (see
-tooling.md). The folder exists for the next thing that *does* need real
-shared client-side state — don't leave it empty out of habit, but don't add
-one just because a library ships a `<Provider>` component either, if using
-it directly inline works just as well.
+Auth and i18n don't need one of these in this stack's defaults: better-auth's
+client (`useSession()`, see auth.md) is store-backed, not context-based, so
+it works with no provider at all; `next-intl`'s `NextIntlClientProvider` is
+already a ready-to-compose client component with nothing app-specific to
+add, used directly inline in the root layout (see tooling.md). Theming
+(`providers/theme.tsx`, wrapping `next-themes` — see ui.md) is the one
+piece in this stack's own defaults that does need the wrapper, since
+`next-themes`' provider is exactly the "third-party client component behind
+a stable import path" case. Don't leave the folder empty out of habit
+either way — add a wrapper once something genuinely needs shared
+client-side state, skip it when using a library's component directly inline
+works just as well.
 
 ## Naming: nest instead of hyphenating
 
