@@ -1,6 +1,6 @@
 ---
 name: nextjs-skill
-description: House conventions for Next.js App Router apps built with TypeScript, Bun, Biome, Prisma, better-auth and next-intl. Use when scaffolding a new Next.js project, or writing/reviewing code in one that follows this stack — auth and the proxy.ts route guard, the service layer and typed errors, file organization, i18n, zod validation, permissions, or Docker/GitHub Actions CI.
+description: House conventions for Next.js App Router apps built with TypeScript, Bun, Biome, Prisma, better-auth and next-intl. Use when scaffolding a new Next.js project, or writing/reviewing code in one that follows this stack — auth and the proxy.ts route guard, the service layer and typed errors, file organization, i18n, zod validation, permissions, shadcn/ui and theming, or Docker/GitHub Actions CI.
 metadata:
   tags: nextjs, react, typescript, prisma, better-auth, next-intl, app-router, bun, biome, zod
 ---
@@ -44,7 +44,7 @@ documents for that specific codebase.
 | Framework | Next.js 16, App Router, TypeScript, `src/` dir, `@/*` alias |
 | Package manager | Bun (`bun.lock`, `bunx`) |
 | Lint/format | Biome (`biome.json`) — no ESLint, no Prettier |
-| Styling | Tailwind v4 + shadcn/ui (`components.json`, `style: new-york`) |
+| Styling | Tailwind v4 + shadcn/ui (`components.json`, `style: new-york`), `cva`, `next-themes` — see ui.md |
 | Auth | `better-auth`, DB-backed sessions, OIDC provider, `src/proxy.ts` guard |
 | i18n | `next-intl`, `en`/`fr`, cookie + `Accept-Language` detection |
 | Database | Prisma (7.x), `pg` adapter, schema at `src/prisma/schema.prisma` |
@@ -69,7 +69,8 @@ Read the matching file before touching that area of a codebase:
 - [rules/translations.md](rules/translations.md) — `next-intl` message schema, ICU rules, gender handling, component-side conventions
 - [rules/prisma.md](rules/prisma.md) — schema location, `prisma.config.ts`, client singleton, generated-client placement
 - [rules/permissions.md](rules/permissions.md) — better-auth's access control for IdP-groups permissions vs. app-local/delegated authorization vs. org-scoped multi-tenant roles, route-level checks, when to reach for which
-- [rules/tooling.md](rules/tooling.md) — Biome config, shadcn/`components.json`, Dockerfile, GitHub Actions workflows, root layout wiring, env files
+- [rules/ui.md](rules/ui.md) — `components.json`, adding/customizing shadcn components, `cva` variants, `cn()`, light/dark theming (CSS variables, `next-themes`, the theme toggle)
+- [rules/tooling.md](rules/tooling.md) — Biome config, Dockerfile, GitHub Actions workflows, root layout wiring, env files
 - [rules/git-workflow.md](rules/git-workflow.md) — commit message format and tag vocabulary, version-bump commits and how they trigger a release, why to prefer several small commits, the Makefile/docker-compose local dev setup
 - [rules/stripe.md](rules/stripe.md) — `@better-auth/stripe` billing, per-user vs per-organization subscriptions, the `authorizeReference` permission check, webhook routing
 

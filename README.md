@@ -37,7 +37,8 @@ that one repo instead of every session.
 - [`rules/validation.md`](rules/validation.md) — zod schema-factory pattern for localized forms
 - [`rules/translations.md`](rules/translations.md) — next-intl message schema and conventions
 - [`rules/prisma.md`](rules/prisma.md) — schema layout, client singleton, CLI-generated auth tables
-- [`rules/tooling.md`](rules/tooling.md) — Biome, shadcn/ui, Docker, GitHub Actions
+- [`rules/ui.md`](rules/ui.md) — shadcn/ui components, `cva` variants, `cn()`, light/dark theming with `next-themes`
+- [`rules/tooling.md`](rules/tooling.md) — Biome, Docker, GitHub Actions
 - [`rules/git-workflow.md`](rules/git-workflow.md) — commit message format, version bumps, local dev environment
 
 ## Updating
