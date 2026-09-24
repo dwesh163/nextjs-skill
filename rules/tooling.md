@@ -113,7 +113,7 @@ outermost wrapper (`ThemeProvider` from `next-themes`) plus
 `suppressHydrationWarning` on `<html>` — see ui.md, which shows the full
 layout with that addition rather than repeating it here.
 
-## Dockerfile — multi-stage, Bun-based, standalone output
+## Dockerfile — multi-stage, Bun build + Node runtime, standalone output
 
 ```dockerfile
 FROM oven/bun:1-slim AS deps
@@ -128,7 +128,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN node node_modules/.bin/next build
 
-FROM oven/bun:1-slim AS runner
+FROM node:22-slim AS runner
 WORKDIR /app
 RUN groupadd --system --gid 1001 nodejs && useradd --system --uid 1001 --gid nodejs nextjs
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME="0.0.0.0"
@@ -145,7 +145,10 @@ output (requires `output: "standalone"` in `next.config.ts`) plus static
 assets and `public/` — not the full `node_modules`. `next build` is invoked
 via `node node_modules/.bin/next build` rather than `bunx next build` in the
 builder stage (avoids Bun re-resolving/downloading in a stage that already
-has `node_modules` installed).
+has `node_modules` installed). The runner stage is `node:22-slim`, not
+`oven/bun` — the Bun image ships no `node` binary, so `CMD ["node",
+"server.js"]` fails on it; `deps`/`builder` stay Bun-based, only the actual
+runtime needs Node.
 
 ## GitHub Actions — reusable workflows
 
