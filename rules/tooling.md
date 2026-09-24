@@ -44,23 +44,11 @@ CI runs `bunx biome ci --reporter=github ./src` (fails the build) and
 separately `bunx biome lint --reporter=json ./src` uploaded as an artifact
 for review — see the GitHub Actions section below.
 
-## shadcn/ui (`components.json`)
+## shadcn/ui and theming
 
-```json
-{
-  "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "new-york",
-  "rsc": true,
-  "tsx": true,
-  "tailwind": { "css": "src/app/globals.css", "baseColor": "neutral", "cssVariables": true },
-  "iconLibrary": "lucide",
-  "aliases": { "components": "@/components", "utils": "@/lib/utils", "ui": "@/components/ui", "lib": "@/lib", "hooks": "@/hooks" }
-}
-```
-
-`style: "new-york"`, `neutral` base color, Lucide icons. Add components with
-`bunx shadcn@latest add <component>` — never hand-write a component that
-shadcn already provides; add it and customize from there.
+`components.json`, adding/customizing components, `cn()`, and the
+light/dark theme system (CSS variables, `next-themes`, the root layout's
+`ThemeProvider`) have their own file — see ui.md.
 
 ## `next.config.ts`
 
@@ -119,6 +107,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 `Accept-Language` header on every request (see translations.md), so static
 optimization of the root layout isn't applicable; declare it explicitly
 rather than relying on Next's automatic detection.
+
+This is the baseline. An app with a light/dark theme toggle adds one more
+outermost wrapper (`ThemeProvider` from `next-themes`) plus
+`suppressHydrationWarning` on `<html>` — see ui.md, which shows the full
+layout with that addition rather than repeating it here.
 
 ## Dockerfile — multi-stage, Bun-based, standalone output
 
